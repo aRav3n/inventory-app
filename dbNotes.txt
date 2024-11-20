@@ -1,0 +1,24 @@
+tables:
+-categories
+-items
+-lists
+
+categories table:
+-id
+-category_name
+
+items table:
+-id
+-category_id (foreign key)
+-item_name VARCHAR ( 255 )
+-description VARCHAR ( 255 )
+-link VARCHAR ( 512 )
+-price 
+-weight
+
+
+packing_list table:
+-id
+-item_id (foreign key)
+-qty
+-worn BOOLEAN

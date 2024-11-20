@@ -1,11 +1,27 @@
 const pool = require("./pool");
 
-function getForeignKey(foreignTable, columnToCompare, columnValueNeeded) {
-  const foreignKey = `
+function getForeignKey(
+  foreignTable,
+  columnToCompare,
+  columnValueNeeded,
+  secondColumnToCompare,
+  secondColumnValueNeeded
+) {
+  let foreignKey;
+  if (!secondColumnToCompare) {
+    foreignKey = `
     (SELECT id 
     FROM ${foreignTable} 
     WHERE ${columnToCompare} LIKE ${columnValueNeeded})
-  `;
+    `;
+  } else {
+    foreignKey = `
+    (SELECT id 
+    FROM ${foreignTable} 
+    WHERE ${columnToCompare} LIKE ${columnValueNeeded}) AND 
+    WHERE ${secondColumnToCompare} LIKE ${secondColumnValueNeeded}
+    `;
+  }
   return foreignKey;
 }
 
@@ -25,7 +41,7 @@ function itemInsertValueString(
   const returnString = `
     INSERT INTO items (category_id, name, description, url, price, weight_grams)
     VALUES
-    ('${categoryID}, ${name}, ${description}, ${url}, ${price}, ${weightG}'),
+    ('${categoryID}', '${name}', '${description}', '${url}', '${price}', '${weightG}'),
     `;
   return returnString;
 }
@@ -90,6 +106,22 @@ function toiletryInsertValueString(name, description, url, price, weightG) {
   return returnValue;
 }
 
+function insertIntoPackingList(name, description, qty, isItemWorn) {
+  const foreignKey = getForeignKey(
+    "items",
+    "name",
+    name,
+    "description",
+    description
+  );
+  const insertString = `
+    INSERT INTO packing_list (item_id, qty, worn)
+    VALUES
+    ('${foreignKey}', '${qty}', '${isItemWorn}')
+  `;
+  return insertString;
+}
+
 async function getMessageDetails(id) {
   const { rows } = await pool.query(
     "SELECT text, being AS user, added, id FROM messages WHERE id = $1",
@@ -118,6 +150,7 @@ module.exports = {
   clothingInsertValueString,
   electronicInsertValueString,
   toiletryInsertValueString,
+  insertIntoPackingList,
   getMessageDetails,
   getMessages,
   submitNewMessage,

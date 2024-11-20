@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS items (
   weight_grams FLOAT,
 );
 
-CREATE TABLE IF NOT EXISTS lists (
+CREATE TABLE IF NOT EXISTS packing_list (
   id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
   item_id FOREIGN KEY,
   qty INTEGER,
@@ -99,6 +99,41 @@ ${dbQueries.clothingInsertValueString(
   "425"
 )}
 
+${dbQueries.insertIntoPackingList(
+  "water Bottle",
+  "Klean Kanteen 40oz",
+  1,
+  false
+)}
+
+${dbQueries.insertIntoPackingList("Playing Cards", "Air Deck", 1, false)}
+
+${dbQueries.insertIntoPackingList("Laptop", "Macbook Air M1", 1, false)}
+
+${dbQueries.insertIntoPackingList("Wall Charger", "AOHI 40W", 1, false)}
+
+${dbQueries.insertIntoPackingList(
+  "Toiletry Bag",
+  "Sea to Summit hanging small",
+  1,
+  false
+)}
+
+${dbQueries.insertIntoPackingList("Toothbrush", "generic bamboo one", 1, false)}
+
+${dbQueries.insertIntoPackingList(
+  "T-Shirt",
+  "Cotton or Cotton-Poly Blend",
+  1,
+  true
+)}
+
+${dbQueries.insertIntoPackingList(
+  "Sandals",
+  "Bedrock Cairn Evo Pro Men's 9",
+  1,
+  false
+)}
 `;
 
 async function main() {
