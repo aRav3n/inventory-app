@@ -1,28 +1,7 @@
 const pool = require("./pool");
 
-function getForeignKey(
-  foreignTable,
-  columnToCompare,
-  columnValueNeeded,
-  secondColumnToCompare,
-  secondColumnValueNeeded
-) {
-  let foreignKey;
-  if (!secondColumnToCompare) {
-    foreignKey = `
-    (SELECT id 
-    FROM ${foreignTable} 
-    WHERE ${columnToCompare} LIKE ${columnValueNeeded})
-    `;
-  } else {
-    foreignKey = `
-    (SELECT id 
-    FROM ${foreignTable} 
-    WHERE ${columnToCompare} LIKE ${columnValueNeeded}) AND 
-    WHERE ${secondColumnToCompare} LIKE ${secondColumnValueNeeded}
-    `;
-  }
-  return foreignKey;
+function getForeignKey(foreignTable, columnToCompare, columnValue) {
+  return `(SELECT id FROM ${foreignTable} WHERE ${columnToCompare} = $1)`;
 }
 
 function itemInsertValueString(
@@ -33,21 +12,32 @@ function itemInsertValueString(
   price,
   weightG
 ) {
-  const categoryID = getForeignKey(
+  const foreignKeyQuery = getForeignKey(
     "categories",
     "category_name",
     categoryNameLike
   );
-  const returnString = `
+
+  const query = `
     INSERT INTO items (category_id, name, description, url, price, weight_grams)
-    VALUES
-    ('${categoryID}', '${name}', '${description}', '${url}', '${price}', '${weightG}'),
-    `;
-  return returnString;
+    VALUES (${foreignKeyQuery}, $2, $3, $4, $5, $6);
+  `;
+
+  return {
+    query,
+    values: [
+      categoryNameLike,
+      name,
+      description,
+      url,
+      price || 0,
+      weightG || 0,
+    ],
+  };
 }
 
 function accessoryInsertValueString(name, description, url, price, weightG) {
-  const returnValue = itemInsertValueString(
+  return itemInsertValueString(
     "Accessories",
     name,
     description,
@@ -55,35 +45,25 @@ function accessoryInsertValueString(name, description, url, price, weightG) {
     price,
     weightG
   );
-  return returnValue;
 }
 
 function bagInsertValueString(name, description, url, price, weightG) {
-  const returnValue = itemInsertValueString(
-    "Electronics",
-    name,
-    description,
-    url,
-    price,
-    weightG
-  );
-  return returnValue;
+  return itemInsertValueString("Bag", name, description, url, price, weightG);
 }
 
 function clothingInsertValueString(name, description, url, price, weightG) {
-  const returnValue = itemInsertValueString(
-    "Electronics",
+  return itemInsertValueString(
+    "Clothing",
     name,
     description,
     url,
     price,
     weightG
   );
-  return returnValue;
 }
 
 function electronicInsertValueString(name, description, url, price, weightG) {
-  const returnValue = itemInsertValueString(
+  return itemInsertValueString(
     "Electronics",
     name,
     description,
@@ -91,41 +71,37 @@ function electronicInsertValueString(name, description, url, price, weightG) {
     price,
     weightG
   );
-  return returnValue;
 }
 
 function toiletryInsertValueString(name, description, url, price, weightG) {
-  const returnValue = itemInsertValueString(
-    "Electronics",
+  return itemInsertValueString(
+    "Toiletries",
     name,
     description,
     url,
     price,
     weightG
   );
-  return returnValue;
 }
 
 function insertIntoPackingList(name, description, qty, isItemWorn) {
-  const foreignKey = getForeignKey(
-    "items",
-    "name",
-    name,
-    "description",
-    description
-  );
-  const insertString = `
+  const foreignKeyQuery = getForeignKey("items", "name", name);
+
+  const query = `
     INSERT INTO packing_list (item_id, qty, worn)
-    VALUES
-    ('${foreignKey}', '${qty}', '${isItemWorn}')
+    VALUES (${foreignKeyQuery}, $2, $3);
   `;
-  return insertString;
+
+  return {
+    query,
+    values: [name, qty, isItemWorn],
+  };
 }
 
 async function getMessageDetails(id) {
   const { rows } = await pool.query(
     "SELECT text, being AS user, added, id FROM messages WHERE id = $1",
-    $2[id]
+    [id]
   );
   return rows[0];
 }
