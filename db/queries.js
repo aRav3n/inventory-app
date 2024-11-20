@@ -1,7 +1,10 @@
 const pool = require("./pool");
 
 function getForeignKey(foreignTable, columnToCompare, columnValue) {
-  return `(SELECT id FROM ${foreignTable} WHERE ${columnToCompare} = $1)`;
+  return {
+    query: `(SELECT id FROM ${foreignTable} WHERE ${columnToCompare} = $1)`,
+    value: columnValue,
+  };
 }
 
 function itemInsertValueString(
