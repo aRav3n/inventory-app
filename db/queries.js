@@ -15,7 +15,7 @@ function itemInsertValueString(
   price,
   weightG
 ) {
-  const foreignKeyQuery = getForeignKey(
+  const categoryID = getForeignKey(
     "categories",
     "category_name",
     categoryNameLike
@@ -23,13 +23,13 @@ function itemInsertValueString(
 
   const query = `
     INSERT INTO items (category_id, name, description, url, price, weight_grams)
-    VALUES (${foreignKeyQuery}, $2, $3, $4, $5, $6);
+    VALUES (${categoryID.query}, $2, $3, $4, $5, $6);
   `;
 
   return {
     query,
     values: [
-      categoryNameLike,
+      categoryID.value,
       name,
       description,
       url,
