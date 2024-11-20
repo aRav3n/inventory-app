@@ -6,5 +6,6 @@ router.get("/", controller.indexActionGet);
 router.get("/new", controller.newActionGet);
 router.post("/new", controller.newActionPost);
 router.get("/search", controller.searchActionGet);
+router.use("*", controller.errorGet);
 
 module.exports = router;
