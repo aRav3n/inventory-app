@@ -1,6 +1,7 @@
 const db = require("../db/queries");
 const { body, validationResult } = require("express-validator");
-const validateUser = [
+/*
+const validateItem = [
   body("userName")
     .trim()
     .isAlpha()
@@ -8,22 +9,17 @@ const validateUser = [
     .isLength({ min: 1, max: 10 })
     .withMessage("Username must be between 1 and 10 characters"),
 ];
+*/
 
 async function indexActionGet(req, res) {
-  const usernames = await db.getAllUsernames();
-  // res.send("Usernames: " + usernames.map((user) => user.username).join(", "));
+  const list = await db.getCurrentList();
   res.render("index", {
-    title: "Users",
-    usernames: usernames,
+    title: "List",
+    list: list,
   });
 }
 
-async function newActionGet(req, res) {
-  res.render("new", {
-    title: "New Page",
-  });
-}
-
+/*
 newActionPost = [
   validateUser,
   async (req, res) => {
@@ -48,10 +44,8 @@ async function searchActionGet(req, res) {
     searchResults: searchResults,
   });
 }
+*/
 
 module.exports = {
   indexActionGet,
-  newActionGet,
-  newActionPost,
-  searchActionGet,
 };

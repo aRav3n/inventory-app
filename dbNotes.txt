@@ -7,14 +7,14 @@ categories table:
 -id
 -category_name
 
-items table:
+items
 -id
 -category_id (foreign key)
--item_name VARCHAR ( 255 )
+-name VARCHAR ( 255 )
 -description VARCHAR ( 255 )
--link VARCHAR ( 512 )
+-url VARCHAR ( 512 )
 -price 
--weight
+-weight_grams
 
 
 packing_list table:

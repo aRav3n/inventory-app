@@ -101,19 +101,30 @@ function insertIntoPackingList(name, description, qty, isItemWorn) {
   };
 }
 
-async function getMessageDetails(id) {
-  const { rows } = await pool.query(
-    "SELECT text, being AS user, added, id FROM messages WHERE id = $1",
-    [id]
-  );
-  return rows[0];
+async function getCategories() {
+  const { rows } = await pool.query("SELECT category_name FROM categories;");
+  return rows;
 }
 
-async function getMessages() {
-  const { rows } = await pool.query(
-    "SELECT text, being AS user, added, id FROM messages"
-  );
-  return rows;
+async function getCurrentList() {
+  const categoryArray = await getCategories();
+  const array = [];
+  for (let i = 0; i < categoryArray.length; i++) {
+    const objectToPush = { category: categoryArray[i].category_name };
+    const { rows } = await pool.query(
+      `
+      SELECT items.name AS name, items.description AS description, items.url AS url, packing_list.worn AS worn, items.price AS price, items.weight_grams AS weight, packing_list.qty AS qty
+      FROM categories
+      JOIN items ON categories.id = items.category_id
+      JOIN packing_list ON items.id = packing_list.item_id
+      WHERE categories.category_name LIKE $1
+      `,
+      [objectToPush.category]
+    );
+    objectToPush.rows = rows;
+    array.push(objectToPush);
+  }
+  return array;
 }
 
 async function submitNewMessage(name, messageText) {
@@ -130,7 +141,5 @@ module.exports = {
   electronicInsertValueString,
   toiletryInsertValueString,
   insertIntoPackingList,
-  getMessageDetails,
-  getMessages,
-  submitNewMessage,
+  getCurrentList,
 };

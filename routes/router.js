@@ -3,6 +3,8 @@ const controller = require("../controllers/controller");
 const router = Router();
 
 router.get("/", controller.indexActionGet);
+/*
+router.post("searchItem", controller.searchItemPost);
 router.post("/newCategory", controller.newCategoryPost);
 router.post("/newItem", controller.newItemPost);
 router.post("/updateCategory", controller.updateCategoryPost);
@@ -12,5 +14,6 @@ router.post("/deleteCategory", controller.deleteCategoryPost);
 router.post("/deleteItem", controller.deleteItemPost);
 
 router.use("*", controller.errorGet);
+*/
 
 module.exports = router;
