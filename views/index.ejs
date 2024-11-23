@@ -2,6 +2,12 @@
 <html lang="en-US">
   <%- include("partials/head.ejs") %>
   <body>
-    
+    <% if (locals.list) { %>
+      <% console.log(list); %>
+      <% for( let i = 0; i < list.length; i++ ) { %>
+        <% const items = list[i].rows %>
+        <h2><%= list[i].category %></h2>
+      <% } %>
+    <% } %>
   </body>
 </html>
