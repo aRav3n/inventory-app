@@ -1,0 +1,16 @@
+.itemsGrid {
+  background-color: black;
+  border: 1px solid #000000;
+  display: grid;
+  gap: 1px;
+  grid-template-columns: repeat(8, 1fr);
+}
+
+.itemsGrid > * {
+  background-color: white;
+}
+
+.itemsGrid img {
+  height: auto;
+  width: 16px;
+}

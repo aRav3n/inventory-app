@@ -3,10 +3,40 @@
   <%- include("partials/head.ejs") %>
   <body>
     <% if (locals.list) { %>
-      <% console.log(list); %>
+      <% console.log("list:", list); %>
       <% for( let i = 0; i < list.length; i++ ) { %>
         <% const items = list[i].rows %>
         <h2><%= list[i].category %></h2>
+        <div class="itemsGrid">
+          <div>Name</div>
+          <div>Description</div>
+          <div>Link</div>
+          <div>Worn?</div>
+          <div>Price</div>
+          <div>Weight</div>
+          <div>Qty</div>
+          <div>Total Weight</div>
+          <% for( let j = 0; j < items.length; j++ ) { %>
+            <% const itemInQuestion = items[j] %>
+            <% if (j === 1 && i === 1) { %>
+              <% console.log("item in question:",itemInQuestion) %>
+            <% } %>
+            <div><%= itemInQuestion.name %></div>
+            <div><%= itemInQuestion.description %></div>
+            <div><a href="<%= itemInQuestion.url %>"><img src="/link.png" alt="link icon"></a></div>
+            <%# color palette source: https://www.color-hex.com/color-palette/63075 %>
+            <div><% if (itemInQuestion.worn) { %>
+              <img src="/worn.png" alt="item is worn">
+            <% } else { %>
+              <img src="/unworn.png" alt="item is not worn">
+            <% } %>
+            </div>
+            <div>$<%= itemInQuestion.price %></div>
+            <div><%= itemInQuestion.weight %>g</div>
+            <div><%= itemInQuestion.qty %></div>
+            <div><%= itemInQuestion.total_weight%>g</div>
+          <% } %>
+        </div>
       <% } %>
     <% } %>
   </body>

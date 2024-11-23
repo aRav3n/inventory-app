@@ -113,7 +113,7 @@ async function getCurrentList() {
     const objectToPush = { category: categoryArray[i].category_name };
     const { rows } = await pool.query(
       `
-      SELECT items.name AS name, items.description AS description, items.url AS url, packing_list.worn AS worn, items.price AS price, items.weight_grams AS weight, packing_list.qty AS qty
+      SELECT items.name AS name, items.description AS description, items.url AS url, packing_list.worn AS worn, items.price AS price, items.weight_grams AS weight, packing_list.qty AS qty, (packing_list.qty * items.weight_grams) AS total_weight
       FROM categories
       JOIN items ON categories.id = items.category_id
       JOIN packing_list ON items.id = packing_list.item_id
