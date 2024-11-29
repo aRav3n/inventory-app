@@ -1,13 +1,39 @@
+.addButton {
+  background-color: #12ae0044;
+  border: 1px solid #00000044;
+  border-radius: 0.25rem;
+  color: #000000;
+  font-weight: bold;
+  margin: 0.5rem;
+  padding: 0.1rem 0.3rem;
+  text-decoration: none;
+}
+
 .itemsGrid {
-  background-color: black;
-  border: 1px solid #000000;
   display: grid;
-  gap: 1px;
-  grid-template-columns: repeat(8, 1fr);
+  grid-template-columns: 2fr 3fr 5rem 5rem 5rem 5rem 5rem 7rem;
 }
 
 .itemsGrid > * {
+  border-bottom: 0.5px solid #00000044;
+  border-top: 0.5px solid #00000044;
+}
+
+.heading {
+  border-top: none;
+  font-weight: bold;
+  text-align: center;
+}
+
+.itemsGrid a,
+.itemsGrid img {
+  justify-self: center;
+}
+
+.itemsGrid > div {
   background-color: white;
+  display: grid;
+  padding: 0.25rem;
 }
 
 .itemsGrid img {

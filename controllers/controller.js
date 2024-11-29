@@ -11,6 +11,13 @@ const validateItem = [
 ];
 */
 
+async function addItemGet(req, res) {
+  const category = req.params.category;
+  console.log(category);
+  await db.insertNewRow(category);
+  res.redirect("/");
+}
+
 async function indexActionGet(req, res) {
   const list = await db.getCurrentList();
   res.render("index", {
@@ -47,5 +54,6 @@ async function searchActionGet(req, res) {
 */
 
 module.exports = {
+  addItemGet,
   indexActionGet,
 };

@@ -3,27 +3,32 @@
   <%- include("partials/head.ejs") %>
   <body>
     <% if (locals.list) { %>
-      <% console.log("list:", list); %>
       <% for( let i = 0; i < list.length; i++ ) { %>
         <% const items = list[i].rows %>
         <h2><%= list[i].category %></h2>
         <div class="itemsGrid">
-          <div>Name</div>
-          <div>Description</div>
-          <div>Link</div>
-          <div>Worn?</div>
-          <div>Price</div>
-          <div>Weight</div>
-          <div>Qty</div>
-          <div>Total Weight</div>
+          <div class="heading">Name</div>
+          <div class="heading">Description</div>
+          <div class="heading">Link</div>
+          <div class="heading">Worn?</div>
+          <div class="heading">Price</div>
+          <div class="heading">Weight</div>
+          <div class="heading">Qty</div>
+          <div class="heading">Total Weight</div>
           <% for( let j = 0; j < items.length; j++ ) { %>
             <% const itemInQuestion = items[j] %>
             <% if (j === 1 && i === 1) { %>
-              <% console.log("item in question:",itemInQuestion) %>
             <% } %>
             <div><%= itemInQuestion.name %></div>
             <div><%= itemInQuestion.description %></div>
-            <div><a href="<%= itemInQuestion.url %>"><img src="/link.png" alt="link icon"></a></div>
+            <div>
+              <% if (itemInQuestion.url.length > 0) { %>
+                <a href="<%= itemInQuestion.url %>" target="_blank" rel="noopener noreferrer"><img src="/link.png" alt="link icon"></a>
+              <% } else { %>
+                <img src="/nolink.png" alt="no link icon">
+              <% } %>
+              
+            </div>
             <%# color palette source: https://www.color-hex.com/color-palette/63075 %>
             <div><% if (itemInQuestion.worn) { %>
               <img src="/worn.png" alt="item is worn">
@@ -36,7 +41,8 @@
             <div><%= itemInQuestion.qty %></div>
             <div><%= itemInQuestion.total_weight%>g</div>
           <% } %>
-        </div>
+            <a class="addButton" href="/addItem/<%= list[i].category %>">Add item</a>
+          </div>
       <% } %>
     <% } %>
   </body>

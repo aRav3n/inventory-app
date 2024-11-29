@@ -1,9 +1,20 @@
 const pool = require("./pool");
+const { Client } = require("pg");
 
 function getForeignKey(foreignTable, columnToCompare, columnValue) {
   return {
     query: `(SELECT id FROM ${foreignTable} WHERE ${columnToCompare} = $1)`,
     value: columnValue,
+  };
+}
+
+function getNewestRowForeignKey(foreignTable, columnToCompare, columnValue) {
+  let subQuery = "";
+  if (columnToCompare && columnValue) {
+    subQuery = ` WHERE ${columnToCompare} LIKE ${columnValue}`;
+  }
+  return {
+    query: `SELECT MAX(id) FROM ${foreignTable}${subQuery}`,
   };
 }
 
@@ -87,7 +98,7 @@ function toiletryInsertValueString(name, description, url, price, weightG) {
   );
 }
 
-function insertIntoPackingList(name, description, qty, isItemWorn) {
+function insertIntoPackingList(name, qty, isItemWorn) {
   const foreignKeyQuery = getForeignKey("items", "name", name);
 
   const query = `
@@ -113,7 +124,18 @@ async function getCurrentList() {
     const objectToPush = { category: categoryArray[i].category_name };
     const { rows } = await pool.query(
       `
-      SELECT items.name AS name, items.description AS description, items.url AS url, packing_list.worn AS worn, items.price AS price, items.weight_grams AS weight, packing_list.qty AS qty, (packing_list.qty * items.weight_grams) AS total_weight
+      SELECT 
+        items.name AS name, 
+        items.description AS description, 
+        items.url AS url, 
+        packing_list.worn AS worn, 
+        CASE 
+          WHEN items.price = 0 THEN '0.00'
+          ELSE TO_CHAR(items.price, '999999999.00') 
+        END AS price,
+        items.weight_grams AS weight, 
+        packing_list.qty AS qty, 
+        (packing_list.qty * items.weight_grams) AS total_weight
       FROM categories
       JOIN items ON categories.id = items.category_id
       JOIN packing_list ON items.id = packing_list.item_id
@@ -125,6 +147,14 @@ async function getCurrentList() {
     array.push(objectToPush);
   }
   return array;
+}
+
+async function insertNewRow(category) {
+  const query = itemInsertValueString(category, "", "", "", "", "");
+  const {rows} = await pool.query("SELECT MAX(id) FROM items");
+  const newestItemID = rows[0].max;
+  console.log(newestItemID);
+  return;
 }
 
 async function submitNewMessage(name, messageText) {
@@ -139,7 +169,8 @@ module.exports = {
   bagInsertValueString,
   clothingInsertValueString,
   electronicInsertValueString,
-  toiletryInsertValueString,
-  insertIntoPackingList,
   getCurrentList,
+  insertIntoPackingList,
+  insertNewRow,
+  toiletryInsertValueString,
 };
