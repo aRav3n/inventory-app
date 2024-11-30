@@ -1,34 +1,33 @@
 const pool = require("./pool");
-const { Client } = require("pg");
 
-function getForeignKey(
+async function getForeignKey(
   foreignTable,
   columnToCompare,
   columnValue,
-  secondColumnToCompare,
-  secondColumnValue
+  secondColumnToCompare = null,
+  secondColumnValue = null
 ) {
-  let substring = { query: "", value: [] };
+  let query = `SELECT id FROM ${foreignTable} WHERE ${columnToCompare} LIKE $1`;
+  const values = [columnValue];
+
   if (secondColumnToCompare && secondColumnValue) {
-    substring = {
-      query: " AND $3 LIKE $4",
-      value: [secondColumnToCompare, secondColumnValue],
-    };
+    query += ` AND ${secondColumnToCompare} LIKE $2`;
+    values.push(secondColumnValue);
   }
-  return {
-    query: `(SELECT id FROM ${foreignTable} WHERE $1 LIKE $2${substring.query})`,
-    value: [columnToCompare, columnValue, ...substring.value],
-  };
+
+  const { rows } = await pool.query(query, values);
+  return rows[0]?.id || null;
 }
 
-function getNewestRowForeignKey(foreignTable, columnToCompare, columnValue) {
-  let subQuery = "";
-  if (columnToCompare && columnValue) {
-    subQuery = ` WHERE ${columnToCompare} LIKE ${columnValue}`;
+async function getNewestItemId() {
+  const { rows } = await pool.query("SELECT MAX(id) AS max FROM items");
+  const newestItemID = rows[0]?.max || null;
+
+  if (!newestItemID) {
+    throw new Error("No items found in the database.");
   }
-  return {
-    query: `SELECT MAX(id) FROM ${foreignTable}${subQuery}`,
-  };
+
+  return newestItemID;
 }
 
 function itemInsertValueString(name, description, url, price, weightG) {
@@ -43,18 +42,47 @@ function itemInsertValueString(name, description, url, price, weightG) {
   };
 }
 
-function insertIntoPackingList(name, qty, isItemWorn) {
-  const foreignKeyQuery = getForeignKey("items", "name", name);
+async function insertIntoPackingList(
+  category,
+  qty,
+  isItemWorn,
+  name = null,
+  description = null
+) {
+  const foreignKeyCategory = await getForeignKey(
+    "categories",
+    "category_name",
+    category
+  );
+  if (!foreignKeyCategory) {
+    throw new Error(`Category ${category} not found!`);
+  }
+
+  let foreignKeyItem = await getNewestItemId();
+  if (name && description) {
+    foreignKeyItem = await getForeignKey(
+      "items",
+      "name",
+      name,
+      "description",
+      description
+    );
+    if (!foreignKeyItem) {
+      throw new Error(
+        `Item "${name}" with description "${description}" not found.`
+      );
+    }
+  }
 
   const query = `
-    INSERT INTO packing_list (item_id, qty, worn)
-    VALUES (${foreignKeyQuery}, $2, $3);
+    INSERT INTO packing_list (category_id, item_id, qty, worn)
+    VALUES ($1, $2, $3, $4);
   `;
+  const values = [foreignKeyCategory, foreignKeyItem, qty, isItemWorn];
 
-  return {
-    query,
-    values: [name, qty, isItemWorn],
-  };
+  await pool.query(query, values);
+
+  return;
 }
 
 async function getCategories() {
@@ -94,10 +122,14 @@ async function getCurrentList() {
   return array;
 }
 
-async function insertNewRow(category) {
-  const query = itemInsertValueString(category, "", "", "", "", "");
-  const { rows } = await pool.query("SELECT MAX(id) FROM items");
-  const newestItemID = rows[0].max;
+async function updateItem(id) {}
+
+async function insertNewItemRow(category) {
+  const itemQuery = itemInsertValueString("", "", "", "", "");
+  await pool.query(itemQuery.query, itemQuery.values);
+
+  await insertIntoPackingList(category, 0, false)
+
   return;
 }
 
@@ -110,7 +142,9 @@ async function submitNewMessage(name, messageText) {
 
 module.exports = {
   getCurrentList,
+  getForeignKey,
+  getNewestItemId,
   insertIntoPackingList,
   itemInsertValueString,
-  insertNewRow,
+  insertNewItemRow,
 };

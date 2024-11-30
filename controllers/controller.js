@@ -15,6 +15,8 @@ async function addItemGet(req, res) {
   const category = req.params.category;
   console.log(category);
   await db.insertNewRow(category);
+  const newestItemID = await db.getNewestItemId();
+  
   res.redirect("/");
 }
 
@@ -24,6 +26,11 @@ async function indexActionGet(req, res) {
     title: "List",
     list: list,
   });
+}
+
+function updateItemGet(req, res) {
+  const itemId = req.params.itemId;
+
 }
 
 /*
@@ -56,4 +63,5 @@ async function searchActionGet(req, res) {
 module.exports = {
   addItemGet,
   indexActionGet,
+  updateItemGet,
 };
