@@ -3,22 +3,21 @@ tables:
 -items
 -packing_list
 
-categories table:
+categories
 -id
 -category_name
 
 items
 -id
--category_id (foreign key)
 -name VARCHAR ( 255 )
 -description VARCHAR ( 255 )
 -url VARCHAR ( 512 )
 -price 
 -weight_grams
 
-
-packing_list table:
+packing_list
 -id
+-category_id (foreign key)
 -item_id (foreign key)
 -qty
 -worn BOOLEAN

@@ -1,10 +1,23 @@
 const pool = require("./pool");
 const { Client } = require("pg");
 
-function getForeignKey(foreignTable, columnToCompare, columnValue) {
+function getForeignKey(
+  foreignTable,
+  columnToCompare,
+  columnValue,
+  secondColumnToCompare,
+  secondColumnValue
+) {
+  let substring = { query: "", value: [] };
+  if (secondColumnToCompare && secondColumnValue) {
+    substring = {
+      query: " AND $3 LIKE $4",
+      value: [secondColumnToCompare, secondColumnValue],
+    };
+  }
   return {
-    query: `(SELECT id FROM ${foreignTable} WHERE ${columnToCompare} = $1)`,
-    value: columnValue,
+    query: `(SELECT id FROM ${foreignTable} WHERE $1 LIKE $2${substring.query})`,
+    value: [columnToCompare, columnValue, ...substring.value],
   };
 }
 
@@ -18,84 +31,16 @@ function getNewestRowForeignKey(foreignTable, columnToCompare, columnValue) {
   };
 }
 
-function itemInsertValueString(
-  categoryNameLike,
-  name,
-  description,
-  url,
-  price,
-  weightG
-) {
-  const categoryID = getForeignKey(
-    "categories",
-    "category_name",
-    categoryNameLike
-  );
-
+function itemInsertValueString(name, description, url, price, weightG) {
   const query = `
-    INSERT INTO items (category_id, name, description, url, price, weight_grams)
-    VALUES (${categoryID.query}, $2, $3, $4, $5, $6);
+    INSERT INTO items (name, description, url, price, weight_grams)
+    VALUES ($1, $2, $3, $4, $5);
   `;
 
   return {
     query,
-    values: [
-      categoryID.value,
-      name,
-      description,
-      url,
-      price || 0,
-      weightG || 0,
-    ],
+    values: [name, description, url, price || 0, weightG || 0],
   };
-}
-
-function accessoryInsertValueString(name, description, url, price, weightG) {
-  return itemInsertValueString(
-    "Accessories",
-    name,
-    description,
-    url,
-    price,
-    weightG
-  );
-}
-
-function bagInsertValueString(name, description, url, price, weightG) {
-  return itemInsertValueString("Bag", name, description, url, price, weightG);
-}
-
-function clothingInsertValueString(name, description, url, price, weightG) {
-  return itemInsertValueString(
-    "Clothing",
-    name,
-    description,
-    url,
-    price,
-    weightG
-  );
-}
-
-function electronicInsertValueString(name, description, url, price, weightG) {
-  return itemInsertValueString(
-    "Electronics",
-    name,
-    description,
-    url,
-    price,
-    weightG
-  );
-}
-
-function toiletryInsertValueString(name, description, url, price, weightG) {
-  return itemInsertValueString(
-    "Toiletries",
-    name,
-    description,
-    url,
-    price,
-    weightG
-  );
 }
 
 function insertIntoPackingList(name, qty, isItemWorn) {
@@ -151,9 +96,8 @@ async function getCurrentList() {
 
 async function insertNewRow(category) {
   const query = itemInsertValueString(category, "", "", "", "", "");
-  const {rows} = await pool.query("SELECT MAX(id) FROM items");
+  const { rows } = await pool.query("SELECT MAX(id) FROM items");
   const newestItemID = rows[0].max;
-  console.log(newestItemID);
   return;
 }
 
@@ -165,12 +109,8 @@ async function submitNewMessage(name, messageText) {
 }
 
 module.exports = {
-  accessoryInsertValueString,
-  bagInsertValueString,
-  clothingInsertValueString,
-  electronicInsertValueString,
   getCurrentList,
   insertIntoPackingList,
+  itemInsertValueString,
   insertNewRow,
-  toiletryInsertValueString,
 };
