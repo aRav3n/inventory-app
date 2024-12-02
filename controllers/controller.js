@@ -13,9 +13,9 @@ const validateItem = [
 
 async function addItemGet(req, res) {
   const categoryId = req.params.category;
-  console.log("category id: ", categoryId);
   await db.insertNewItemRow(categoryId);
   const newestItemID = await db.getNewestItemId();
+  console.log(newestItemID);
 
   res.redirect("/");
 }

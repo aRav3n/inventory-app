@@ -81,17 +81,6 @@ async function insertIntoPackingList(
   `;
   const values = [foreignKeyCategory, foreignKeyItem, qty, isItemWorn];
 
-  /*
-  console.log(
-    "name: ",
-    name,
-    " description: ",
-    description,
-    " category: ",
-    category
-  );
-  */
-
   await pool.query(query, values);
 }
 
@@ -99,7 +88,6 @@ async function getCategories() {
   const { rows } = await pool.query(
     "SELECT id, category_name FROM categories;"
   );
-  console.log(rows);
   return rows;
 }
 
@@ -143,7 +131,7 @@ async function updateItem(id) {}
 async function insertNewItemRow(categoryId) {
   await insertItem("", "", "", "", "");
 
-  await insertIntoPackingList(category, 0, false);
+  await insertIntoPackingList(categoryId, 0, false);
 
   return;
 }
