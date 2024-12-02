@@ -12,11 +12,11 @@ const validateItem = [
 */
 
 async function addItemGet(req, res) {
-  const category = req.params.category;
-  console.log(category);
-  await db.insertNewRow(category);
+  const categoryId = req.params.category;
+  console.log("category id: ", categoryId);
+  await db.insertNewItemRow(categoryId);
   const newestItemID = await db.getNewestItemId();
-  
+
   res.redirect("/");
 }
 
@@ -30,7 +30,6 @@ async function indexActionGet(req, res) {
 
 function updateItemGet(req, res) {
   const itemId = req.params.itemId;
-
 }
 
 /*

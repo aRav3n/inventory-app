@@ -48,7 +48,7 @@ async function insertItem(name, description, url, price, weightG) {
 }
 
 async function insertIntoPackingList(
-  category,
+  foreignKeyCategory,
   qty,
   isItemWorn,
   name = null,
@@ -56,15 +56,6 @@ async function insertIntoPackingList(
 ) {
   name = name?.trim();
   description = description?.trim();
-
-  const foreignKeyCategory = await getForeignKey(
-    "categories",
-    "category_name",
-    category
-  );
-  if (!foreignKeyCategory) {
-    throw new Error(`Category ${category} not found!`);
-  }
 
   let foreignKeyItem;
   if (name && description) {
@@ -105,7 +96,10 @@ async function insertIntoPackingList(
 }
 
 async function getCategories() {
-  const { rows } = await pool.query("SELECT category_name FROM categories;");
+  const { rows } = await pool.query(
+    "SELECT id, category_name FROM categories;"
+  );
+  console.log(rows);
   return rows;
 }
 
@@ -113,7 +107,10 @@ async function getCurrentList() {
   const categoryArray = await getCategories();
   const array = [];
   for (let i = 0; i < categoryArray.length; i++) {
-    const objectToPush = { category: categoryArray[i].category_name };
+    const objectToPush = {
+      category: categoryArray[i].category_name,
+      category_id: categoryArray[i].id,
+    };
     const { rows } = await pool.query(
       `
       SELECT 
@@ -143,7 +140,7 @@ async function getCurrentList() {
 
 async function updateItem(id) {}
 
-async function insertNewItemRow(category) {
+async function insertNewItemRow(categoryId) {
   await insertItem("", "", "", "", "");
 
   await insertIntoPackingList(category, 0, false);

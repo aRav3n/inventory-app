@@ -47,7 +47,7 @@ function buildItemObject(
   qty = 0,
   worn = false
 ) {
-    name?.trim(),
+  name?.trim(),
     description?.trim(),
     url,
     Number(price) || 0,
@@ -190,7 +190,7 @@ async function main() {
           item.weight
         );
         await db.insertIntoPackingList(
-          item.category,
+          await db.getForeignKey("categories", "category_name", item.category),
           item.qty,
           item.worn,
           item.name,
