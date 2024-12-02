@@ -126,6 +126,32 @@ async function getCurrentList() {
   return array;
 }
 
+async function getSingleItem(itemId) {
+  const { rows } = await pool.query(
+    `
+    SELECT 
+        items.name AS name, 
+        items.description AS description, 
+        items.url AS url, 
+        packing_list.worn AS worn, 
+        CASE 
+          WHEN items.price = 0 THEN '0.00'
+          ELSE TO_CHAR(items.price, '999999999.00') 
+        END AS price,
+        items.weight_grams AS weight, 
+        packing_list.qty AS qty, 
+        (packing_list.qty * items.weight_grams) AS total_weight
+      FROM packing_list
+      JOIN items ON packing_list.item_id = items.id
+      JOIN categories ON packing_list.category_id = categories.id
+      WHERE items.id = $1
+    `,
+    [itemId]
+  );
+  const itemObject = rows[0];
+  console.log(itemObject);
+}
+
 async function updateItem(id) {}
 
 async function insertNewItemRow(categoryId) {
@@ -147,6 +173,7 @@ module.exports = {
   getCurrentList,
   getForeignKey,
   getNewestItemId,
+  getSingleItem,
   insertIntoPackingList,
   insertItem,
   insertNewItemRow,

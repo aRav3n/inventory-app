@@ -13,11 +13,11 @@ const validateItem = [
 
 async function addItemGet(req, res) {
   const categoryId = req.params.category;
-  await db.insertNewItemRow(categoryId);
+  // temporary pause on new row insertion
+  // await db.insertNewItemRow(categoryId);
   const newestItemID = await db.getNewestItemId();
-  console.log(newestItemID);
 
-  res.redirect("/");
+  res.redirect(`/updateItem/${newestItemID}`);
 }
 
 async function indexActionGet(req, res) {
@@ -28,8 +28,14 @@ async function indexActionGet(req, res) {
   });
 }
 
-function updateItemGet(req, res) {
+async function updateItemGet(req, res) {
   const itemId = req.params.itemId;
+  const currentItem = await db.getSingleItem(itemId);
+  res.render("updateItem", {
+    title: "Update Item",
+    itemId: itemId,
+    currentItem: currentItem,
+  });
 }
 
 /*
