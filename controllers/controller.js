@@ -30,13 +30,15 @@ async function indexActionGet(req, res) {
 
 async function updateItemGet(req, res) {
   const itemId = req.params.itemId;
-  const currentItem = await db.getSingleItem(itemId);
+  const item = await db.getSingleItem(itemId);
   res.render("updateItem", {
     title: "Update Item",
     itemId: itemId,
-    currentItem: currentItem,
+    item: item,
   });
 }
+
+async function updateItemPost(req, res) {}
 
 /*
 newActionPost = [

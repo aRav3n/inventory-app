@@ -130,6 +130,8 @@ async function getSingleItem(itemId) {
   const { rows } = await pool.query(
     `
     SELECT 
+        items.id AS item_id,
+        packing_list.id AS list_id,
         items.name AS name, 
         items.description AS description, 
         items.url AS url, 
@@ -149,7 +151,7 @@ async function getSingleItem(itemId) {
     [itemId]
   );
   const itemObject = rows[0];
-  console.log(itemObject);
+  return itemObject;
 }
 
 async function updateItem(id) {}

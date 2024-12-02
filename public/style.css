@@ -1,12 +1,36 @@
 .addButton {
+  align-items: center;
   background-color: #12ae0044;
   border: 1px solid #00000044;
   border-radius: 0.25rem;
   color: #000000;
+  display: flex;
   font-weight: bold;
   margin: 0.5rem;
   padding: 0.1rem 0.3rem;
   text-decoration: none;
+}
+
+.addButton img {
+  height: auto;
+  width: 24px;
+}
+
+form {
+  display: grid;
+  gap: 1vh;
+  justify-content: center;
+  justify-items: center;
+}
+
+form > * {
+  border: 1px solid #00000044;
+  border-radius: 0.25rem;
+  padding: 0.25rem;
+}
+
+h1 {
+  text-align: center;
 }
 
 .itemsGrid {

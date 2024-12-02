@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en-US">
+  <%- include("partials/head.ejs") %>
+  <body>
+    <h1><%= title %></h1>
+    <form action="/updateItem/<%= itemId %>" method="post">
+      <input type="text" name="name" id="name" placeholder="Name" value="<%= item.name %>">
+      <input type="text" name="description" id="description" placeholder="Description" value="<%= item.description %>">
+      <input type="url" name="url" id="url" placeholder="Link" value="<%= item.url %>">
+      <input type="number" name="price" step="0.01" min="0" id="price" placeholder="Price" <% if (item.price > 0) { %>
+        value="$<%= item.price %>"
+      <% } %>>
+      <input type="number" name="weight" id="weight" step="0.01" min="0" placeholder="Weight (grams)" <% if (item.weight > 0) { %>
+        value="$<%= item.weight %>g"
+      <% } %>>
+      <input type="number" name="qty" id="qty" step="1" min="0" placeholder="Quantity" <% if (item.qty > 0) { %>
+        value="$<%= item.qty %>"
+      <% } %>>
+
+      <button type="submit" class="addButton">
+        <img src="/save.png" alt="" />  Save Changes
+      </button>
+    </form>
+  </body>
+</html>
