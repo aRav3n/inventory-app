@@ -7,11 +7,11 @@ async function getForeignKey(
   secondColumnToCompare = null,
   secondColumnValue = null
 ) {
-  let query = `SELECT id FROM ${foreignTable} WHERE ${columnToCompare} LIKE $1`;
+  let query = `SELECT id FROM ${foreignTable} WHERE ${columnToCompare} = $1`;
   const values = [columnValue];
 
   if (secondColumnToCompare && secondColumnValue) {
-    query += ` AND ${secondColumnToCompare} LIKE $2`;
+    query += ` AND ${secondColumnToCompare} = $2`;
     values.push(secondColumnValue);
   }
 
@@ -30,16 +30,21 @@ async function getNewestItemId() {
   return newestItemID;
 }
 
-function itemInsertValueString(name, description, url, price, weightG) {
+async function insertItem(name, description, url, price, weightG) {
   const query = `
     INSERT INTO items (name, description, url, price, weight_grams)
     VALUES ($1, $2, $3, $4, $5);
   `;
 
-  return {
-    query,
-    values: [name, description, url, price || 0, weightG || 0],
-  };
+  const values = [
+    name?.trim(),
+    description?.trim(),
+    url,
+    Number(price) || 0,
+    Number(weightG) || 0,
+  ];
+
+  await pool.query(query, values);
 }
 
 async function insertIntoPackingList(
@@ -49,6 +54,9 @@ async function insertIntoPackingList(
   name = null,
   description = null
 ) {
+  name = name?.trim();
+  description = description?.trim();
+
   const foreignKeyCategory = await getForeignKey(
     "categories",
     "category_name",
@@ -58,7 +66,7 @@ async function insertIntoPackingList(
     throw new Error(`Category ${category} not found!`);
   }
 
-  let foreignKeyItem = await getNewestItemId();
+  let foreignKeyItem;
   if (name && description) {
     foreignKeyItem = await getForeignKey(
       "items",
@@ -72,6 +80,8 @@ async function insertIntoPackingList(
         `Item "${name}" with description "${description}" not found.`
       );
     }
+  } else {
+    foreignKeyItem = await getNewestItemId();
   }
 
   const query = `
@@ -80,9 +90,18 @@ async function insertIntoPackingList(
   `;
   const values = [foreignKeyCategory, foreignKeyItem, qty, isItemWorn];
 
-  await pool.query(query, values);
+  /*
+  console.log(
+    "name: ",
+    name,
+    " description: ",
+    description,
+    " category: ",
+    category
+  );
+  */
 
-  return;
+  await pool.query(query, values);
 }
 
 async function getCategories() {
@@ -109,9 +128,9 @@ async function getCurrentList() {
         items.weight_grams AS weight, 
         packing_list.qty AS qty, 
         (packing_list.qty * items.weight_grams) AS total_weight
-      FROM categories
-      JOIN items ON categories.id = items.category_id
-      JOIN packing_list ON items.id = packing_list.item_id
+      FROM packing_list
+      JOIN items ON packing_list.item_id = items.id
+      JOIN categories ON packing_list.category_id = categories.id
       WHERE categories.category_name LIKE $1
       `,
       [objectToPush.category]
@@ -125,10 +144,9 @@ async function getCurrentList() {
 async function updateItem(id) {}
 
 async function insertNewItemRow(category) {
-  const itemQuery = itemInsertValueString("", "", "", "", "");
-  await pool.query(itemQuery.query, itemQuery.values);
+  await insertItem("", "", "", "", "");
 
-  await insertIntoPackingList(category, 0, false)
+  await insertIntoPackingList(category, 0, false);
 
   return;
 }
@@ -145,6 +163,6 @@ module.exports = {
   getForeignKey,
   getNewestItemId,
   insertIntoPackingList,
-  itemInsertValueString,
+  insertItem,
   insertNewItemRow,
 };
