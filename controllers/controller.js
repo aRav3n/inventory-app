@@ -29,11 +29,11 @@ async function indexActionGet(req, res) {
 }
 
 async function updateItemGet(req, res) {
-  const itemId = req.params.itemId;
-  const item = await db.getSingleItem(itemId);
+  const id = req.params.packingListItemId;
+  const item = await db.getSingleItemFromPackingList(id);
   res.render("updateItem", {
     title: "Update Item",
-    itemId: itemId,
+    id: id,
     item: item,
   });
 }

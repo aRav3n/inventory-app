@@ -126,7 +126,7 @@ async function getCurrentList() {
   return array;
 }
 
-async function getSingleItem(itemId) {
+async function getSingleItemFromPackingList(packingListItemId) {
   const { rows } = await pool.query(
     `
     SELECT 
@@ -146,9 +146,9 @@ async function getSingleItem(itemId) {
       FROM packing_list
       JOIN items ON packing_list.item_id = items.id
       JOIN categories ON packing_list.category_id = categories.id
-      WHERE items.id = $1
+      WHERE packing_list.id = $1
     `,
-    [itemId]
+    [packingListItemId]
   );
   const itemObject = rows[0];
   return itemObject;
@@ -175,7 +175,7 @@ module.exports = {
   getCurrentList,
   getForeignKey,
   getNewestItemId,
-  getSingleItem,
+  getSingleItemFromPackingList,
   insertIntoPackingList,
   insertItem,
   insertNewItemRow,

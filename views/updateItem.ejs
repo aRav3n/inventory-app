@@ -3,7 +3,7 @@
   <%- include("partials/head.ejs") %>
   <body>
     <h1><%= title %></h1>
-    <form action="/updateItem/<%= itemId %>" method="post">
+    <form action="/updateItem/<%= id %>" method="post">
       <input type="text" name="name" id="name" placeholder="Name" value="<%= item.name %>">
       <input type="text" name="description" id="description" placeholder="Description" value="<%= item.description %>">
       <input type="url" name="url" id="url" placeholder="Link" value="<%= item.url %>">
