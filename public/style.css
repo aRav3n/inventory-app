@@ -23,7 +23,7 @@ form {
   justify-items: center;
 }
 
-form > * {
+form input {
   border: 1px solid #00000044;
   border-radius: 0.25rem;
   padding: 0.25rem;
@@ -63,4 +63,20 @@ h1 {
 .itemsGrid img {
   height: auto;
   width: 16px;
+}
+
+label {
+  border: none;
+  display: grid;
+}
+
+#toggleButton {
+  background-color: #00000000;
+  border: none;
+}
+
+#toggleButton img {
+  background-color: #00000000;
+  height: auto;
+  width: 32px;
 }

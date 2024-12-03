@@ -3,19 +3,44 @@
   <%- include("partials/head.ejs") %>
   <body>
     <h1><%= title %></h1>
+    <form action="/toggleWornPost/<%= id %>" method="post">
+      <label for="toggleButton">
+        Worn?
+        <button type="submit" id="toggleButton">
+          <% if (item.worn) { %>
+            <img src="/worn.png" alt="item is worn">
+          <% } else { %>
+            <img src="/unworn.png" alt="item is not worn">
+          <% } %>
+        </button>
+
+      </label>
+    </form>
     <form action="/updateItem/<%= id %>" method="post">
-      <input type="text" name="name" id="name" placeholder="Name" value="<%= item.name %>">
-      <input type="text" name="description" id="description" placeholder="Description" value="<%= item.description %>">
-      <input type="url" name="url" id="url" placeholder="Link" value="<%= item.url %>">
-      <input type="number" name="price" step="0.01" min="0" id="price" placeholder="Price" <% if (item.price > 0) { %>
-        value="$<%= item.price %>"
-      <% } %>>
-      <input type="number" name="weight" id="weight" step="0.01" min="0" placeholder="Weight (grams)" <% if (item.weight > 0) { %>
-        value="$<%= item.weight %>g"
-      <% } %>>
-      <input type="number" name="qty" id="qty" step="1" min="0" placeholder="Quantity" <% if (item.qty > 0) { %>
-        value="$<%= item.qty %>"
-      <% } %>>
+      <label for="name">
+        Name:
+        <input type="text" name="name" id="name" placeholder="Name" value="<%= item.name %>">
+      </label>
+      <label for="description">
+        Description:
+        <input type="text" name="description" id="description" placeholder="Description" value="<%= item.description %>">
+      </label>
+      <label for="url">
+        Link:
+        <input type="url" name="url" id="url" placeholder="Link" value="<%= item.url %>">
+      </label>
+      <label for="price">
+        Price ($):
+        <input type="number" name="price" step="0.01" min="0" id="price" placeholder="Price" value="<%= item.price %>">
+      </label>
+      <label for="weight">
+        Weight (grams):
+        <input type="number" name="weight" id="weight" step="0.01" min="0" placeholder="Weight (grams)" value="<%= item.weight %>">
+      </label>
+      <label for="qty">
+        Quantity:
+        <input type="number" name="qty" id="qty" step="1" min="0" placeholder="Quantity" value="<%= item.qty %>">
+      </label>
 
       <button type="submit" class="addButton">
         <img src="/save.png" alt="" />  Save Changes

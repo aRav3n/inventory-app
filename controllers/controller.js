@@ -12,9 +12,6 @@ const validateItem = [
 */
 
 async function addItemGet(req, res) {
-  const categoryId = req.params.category;
-  // temporary pause on new row insertion
-  // await db.insertNewItemRow(categoryId);
   const newestItemID = await db.getNewestItemId();
 
   res.redirect(`/updateItem/${newestItemID}`);
@@ -41,41 +38,20 @@ async function updateItemGet(req, res) {
 async function updateItemPost(req, res) {
   const packingListItemId = req.params.packingListItemId;
   const updateObject = req.body;
-  console.log(updateObject);
   await db.updateItem(packingListItemId, updateObject);
   res.redirect("/");
 }
 
-/*
-newActionPost = [
-  validateUser,
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).render("createUser", {
-        title: "Create user",
-        errors: errors.array(),
-      });
-    }
-    const { userName } = req.body;
-    await db.insertUsername(userName);
-    res.redirect("/");
-  },
-];
-
-async function searchActionGet(req, res) {
-  const { searchString } = req.query;
-  const searchResults = await db.searchUsers(searchString);
-  res.render("search", {
-    title: "Search Results",
-    searchResults: searchResults,
-  });
+async function toggleWornBooleanPost(req, res) {
+  const id = req.params.packingListItemId;
+  await db.toggleWornBoolean(id);
+  res.redirect(`/updateItem/${id}`);
 }
-*/
 
 module.exports = {
   addItemGet,
   indexActionGet,
+  toggleWornBooleanPost,
   updateItemGet,
   updateItemPost,
 };

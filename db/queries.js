@@ -155,28 +155,15 @@ async function getSingleItemFromPackingList(packingListItemId) {
 }
 
 async function updateItem(packingListItemId, newInfoObject) {
-  /*
-    newInfoObject example:
-    {
-      name: 'name',
-      description: 'desc',
-      url: '',
-      price: '1',
-      weight: '69',
-      qty: '72'
-    }
-  */
-  // Update the `packing_list` table
   await pool.query(
     `
     UPDATE packing_list
     SET qty = $1
     WHERE id = $2
     `,
-    [newInfoObject.qty, packingListItemId]
+    [Number(newInfoObject.qty), packingListItemId]
   );
 
-  // Update the `items` table
   await pool.query(
     `
     UPDATE items
@@ -192,13 +179,12 @@ async function updateItem(packingListItemId, newInfoObject) {
       newInfoObject.name,
       newInfoObject.description,
       newInfoObject.url,
-      newInfoObject.price,
-      newInfoObject.weight,
-      packingListItemId,
+      Number(newInfoObject.price),
+      Number(newInfoObject.weight),
+      Number(packingListItemId),
     ]
   );
 }
-
 
 async function insertNewItemRow(categoryId) {
   await insertItem("", "", "", "", "");
@@ -206,6 +192,10 @@ async function insertNewItemRow(categoryId) {
   await insertIntoPackingList(categoryId, 0, false);
 
   return;
+}
+
+async function toggleWornBoolean(packingListItemId) {
+  console.log(packingListItemId);
 }
 
 async function submitNewMessage(name, messageText) {
@@ -223,5 +213,6 @@ module.exports = {
   insertIntoPackingList,
   insertItem,
   insertNewItemRow,
+  toggleWornBoolean,
   updateItem,
 };
