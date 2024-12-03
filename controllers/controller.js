@@ -38,7 +38,13 @@ async function updateItemGet(req, res) {
   });
 }
 
-async function updateItemPost(req, res) {}
+async function updateItemPost(req, res) {
+  const packingListItemId = req.params.packingListItemId;
+  const updateObject = req.body;
+  console.log(updateObject);
+  await db.updateItem(packingListItemId, updateObject);
+  res.redirect("/");
+}
 
 /*
 newActionPost = [
@@ -71,4 +77,5 @@ module.exports = {
   addItemGet,
   indexActionGet,
   updateItemGet,
+  updateItemPost,
 };

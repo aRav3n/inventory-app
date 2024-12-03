@@ -154,7 +154,51 @@ async function getSingleItemFromPackingList(packingListItemId) {
   return itemObject;
 }
 
-async function updateItem(id) {}
+async function updateItem(packingListItemId, newInfoObject) {
+  /*
+    newInfoObject example:
+    {
+      name: 'name',
+      description: 'desc',
+      url: '',
+      price: '1',
+      weight: '69',
+      qty: '72'
+    }
+  */
+  // Update the `packing_list` table
+  await pool.query(
+    `
+    UPDATE packing_list
+    SET qty = $1
+    WHERE id = $2
+    `,
+    [newInfoObject.qty, packingListItemId]
+  );
+
+  // Update the `items` table
+  await pool.query(
+    `
+    UPDATE items
+    SET
+      name = $1,
+      description = $2,
+      url = $3,
+      price = $4,
+      weight_grams = $5
+    WHERE id = (SELECT item_id FROM packing_list WHERE id = $6)
+    `,
+    [
+      newInfoObject.name,
+      newInfoObject.description,
+      newInfoObject.url,
+      newInfoObject.price,
+      newInfoObject.weight,
+      packingListItemId,
+    ]
+  );
+}
+
 
 async function insertNewItemRow(categoryId) {
   await insertItem("", "", "", "", "");
@@ -179,4 +223,5 @@ module.exports = {
   insertIntoPackingList,
   insertItem,
   insertNewItemRow,
+  updateItem,
 };
