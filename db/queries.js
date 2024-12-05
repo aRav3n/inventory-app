@@ -195,7 +195,20 @@ async function insertNewItemRow(categoryId) {
 }
 
 async function toggleWornBoolean(packingListItemId) {
-  console.log(packingListItemId);
+  const { rows } = await pool.query(
+    `
+    SELECT worn FROM packing_list WHERE id = $1
+  `,
+    [packingListItemId]
+  );
+  const currentWornBooleanValue = rows[0].worn;
+  const newWornBooleanValue = !currentWornBooleanValue;
+  await pool.query(`
+    UPDATE packing_list 
+    SET worn = $1
+    WHERE id = $2
+  `,
+  [newWornBooleanValue, packingListItemId])
 }
 
 async function submitNewMessage(name, messageText) {
