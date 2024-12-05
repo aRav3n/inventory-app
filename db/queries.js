@@ -102,6 +102,7 @@ async function getCurrentList() {
     const { rows } = await pool.query(
       `
       SELECT 
+        packing_list.id AS list_id,
         items.name AS name, 
         items.description AS description, 
         items.url AS url, 
@@ -132,6 +133,7 @@ async function getSingleItemFromPackingList(packingListItemId) {
     SELECT 
         items.id AS item_id,
         packing_list.id AS list_id,
+        categories.category_name AS category,
         items.name AS name, 
         items.description AS description, 
         items.url AS url, 
@@ -194,6 +196,16 @@ async function insertNewItemRow(categoryId) {
   return;
 }
 
+async function removeItemFromPackingList(packingListItemId) {
+  await pool.query(
+    `
+    DELETE FROM packing_list
+    WHERE id = $1
+  `,
+    [packingListItemId]
+  );
+}
+
 async function toggleWornBoolean(packingListItemId) {
   const { rows } = await pool.query(
     `
@@ -203,12 +215,14 @@ async function toggleWornBoolean(packingListItemId) {
   );
   const currentWornBooleanValue = rows[0].worn;
   const newWornBooleanValue = !currentWornBooleanValue;
-  await pool.query(`
+  await pool.query(
+    `
     UPDATE packing_list 
     SET worn = $1
     WHERE id = $2
   `,
-  [newWornBooleanValue, packingListItemId])
+    [newWornBooleanValue, packingListItemId]
+  );
 }
 
 async function submitNewMessage(name, messageText) {
@@ -226,6 +240,7 @@ module.exports = {
   insertIntoPackingList,
   insertItem,
   insertNewItemRow,
+  removeItemFromPackingList,
   toggleWornBoolean,
   updateItem,
 };

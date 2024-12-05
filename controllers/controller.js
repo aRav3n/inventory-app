@@ -17,6 +17,12 @@ async function addItemGet(req, res) {
   res.redirect(`/updateItem/${newestItemID}`);
 }
 
+async function deleteItemFromListPost(req, res) {
+  const packingListItemId = req.params.packingListItemId;
+  await db.removeItemFromPackingList(packingListItemId);
+  res.redirect("/");
+}
+
 async function indexActionGet(req, res) {
   const list = await db.getCurrentList();
   res.render("index", {
@@ -50,6 +56,7 @@ async function toggleWornBooleanPost(req, res) {
 
 module.exports = {
   addItemGet,
+  deleteItemFromListPost,
   indexActionGet,
   toggleWornBooleanPost,
   updateItemGet,

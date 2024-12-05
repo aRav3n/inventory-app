@@ -15,6 +15,7 @@
           <div class="heading">Weight</div>
           <div class="heading">Qty</div>
           <div class="heading">Total Weight</div>
+          <div class="heading"></div>
           <% for( let j = 0; j < items.length; j++ ) { %>
             <% const itemInQuestion = items[j] %>
             <% if (j === 1 && i === 1) { %>
@@ -40,6 +41,7 @@
             <div><%= itemInQuestion.weight %>g</div>
             <div><%= itemInQuestion.qty %></div>
             <div><%= itemInQuestion.total_weight%>g</div>
+            <div><a href="/updateItem/<%= itemInQuestion.list_id %>"><button tabindex="-1" class="addButton">Edit</button></a></div>
           <% } %>
             <a class="addButton" href="/addItem/<%= list[i].category_id %>">Add item</a>
           </div>

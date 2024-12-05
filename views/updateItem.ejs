@@ -43,8 +43,12 @@
       </label>
 
       <button type="submit" class="addButton">
-        <img src="/save.png" alt="" />  Save Changes
+        <img src="/save.png" alt="" /> Save Changes
       </button>
+    </form>
+    <form action="/removeItemFromList/<%= id %>" method="post">
+      <% console.log(item) %>
+      <button type="submit" class="deleteButton"><img src="/delete.png" alt=""> Remove From <%= item.category %></button>
     </form>
   </body>
 </html>
