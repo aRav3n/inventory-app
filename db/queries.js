@@ -225,13 +225,6 @@ async function toggleWornBoolean(packingListItemId) {
   );
 }
 
-async function submitNewMessage(name, messageText) {
-  await pool.query("INSERT INTO messages (text, being) VALUES ($1, $2)", [
-    messageText,
-    name,
-  ]);
-}
-
 module.exports = {
   getCurrentList,
   getForeignKey,
