@@ -2,50 +2,55 @@
 <html lang="en-US">
   <%- include("partials/head.ejs") %>
   <body>
-    <% if (locals.list) { %>
-      <% for( let i = 0; i < list.length; i++ ) { %>
-        <% const items = list[i].rows %>
-        <h2><%= list[i].category %></h2>
-        <div class="itemsGrid">
-          <div class="heading">Name</div>
-          <div class="heading">Description</div>
-          <div class="heading">Link</div>
-          <div class="heading">Worn?</div>
-          <div class="heading">Price</div>
-          <div class="heading">Weight</div>
-          <div class="heading">Qty</div>
-          <div class="heading">Total Weight</div>
-          <div class="heading"></div>
-          <% for( let j = 0; j < items.length; j++ ) { %>
-            <% const itemInQuestion = items[j] %>
-            <% if (j === 1 && i === 1) { %>
-            <% } %>
-            <div><%= itemInQuestion.name %></div>
-            <div><%= itemInQuestion.description %></div>
-            <div>
-              <% if (itemInQuestion.url.length > 0) { %>
-                <a href="<%= itemInQuestion.url %>" target="_blank" rel="noopener noreferrer"><img src="/link.png" alt="link icon"></a>
-              <% } else { %>
-                <img src="/nolink.png" alt="no link icon">
+    <div class="indexBody">
+      <%- include("partials/fullItemList.ejs") %>
+      <div class="mainContent">
+        <% if (locals.list) { %>
+          <% for( let i = 0; i < list.length; i++ ) { %>
+            <% const items = list[i].rows %>
+            <h2><%= list[i].category %></h2>
+            <div class="itemsGrid">
+              <div class="heading">Name</div>
+              <div class="heading">Description</div>
+              <div class="heading">Link</div>
+              <div class="heading">Worn?</div>
+              <div class="heading">Price</div>
+              <div class="heading">Weight</div>
+              <div class="heading">Qty</div>
+              <div class="heading">Total Weight</div>
+              <div class="heading"></div>
+              <% for( let j = 0; j < items.length; j++ ) { %>
+                <% const itemInQuestion = items[j] %>
+                <% if (j === 1 && i === 1) { %>
+                <% } %>
+                <div><%= itemInQuestion.name %></div>
+                <div><%= itemInQuestion.description %></div>
+                <div>
+                  <% if (itemInQuestion.url.length > 0) { %>
+                    <a href="<%= itemInQuestion.url %>" target="_blank" rel="noopener noreferrer"><img src="/link.png" alt="link icon"></a>
+                  <% } else { %>
+                    <img src="/nolink.png" alt="no link icon">
+                  <% } %>
+                  
+                </div>
+                <%# color palette source: https://www.color-hex.com/color-palette/63075 %>
+                <div><% if (itemInQuestion.worn) { %>
+                  <img src="/worn.png" alt="item is worn">
+                <% } else { %>
+                  <img src="/unworn.png" alt="item is not worn">
+                <% } %>
+                </div>
+                <div>$<%= itemInQuestion.price %></div>
+                <div><%= itemInQuestion.weight %>g</div>
+                <div><%= itemInQuestion.qty %></div>
+                <div><%= itemInQuestion.total_weight%>g</div>
+                <div><a href="/updateItem/<%= itemInQuestion.list_id %>"><button tabindex="-1" class="addButton">Edit</button></a></div>
               <% } %>
-              
-            </div>
-            <%# color palette source: https://www.color-hex.com/color-palette/63075 %>
-            <div><% if (itemInQuestion.worn) { %>
-              <img src="/worn.png" alt="item is worn">
-            <% } else { %>
-              <img src="/unworn.png" alt="item is not worn">
-            <% } %>
-            </div>
-            <div>$<%= itemInQuestion.price %></div>
-            <div><%= itemInQuestion.weight %>g</div>
-            <div><%= itemInQuestion.qty %></div>
-            <div><%= itemInQuestion.total_weight%>g</div>
-            <div><a href="/updateItem/<%= itemInQuestion.list_id %>"><button tabindex="-1" class="addButton">Edit</button></a></div>
+                <a class="addButton" href="/addItem/<%= list[i].category_id %>">Add item</a>
+              </div>
           <% } %>
-            <a class="addButton" href="/addItem/<%= list[i].category_id %>">Add item</a>
-          </div>
-      <% } %>
-    <% } %>
+        <% } %>
+        </div>
+    </div>
   </body>
 </html>

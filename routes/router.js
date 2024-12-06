@@ -4,6 +4,7 @@ const router = Router();
 
 router.get("/", controller.indexActionGet);
 router.get("/addItem/:category", controller.addItemGet);
+router.get("/addItemToCategory/:itemId", controller.addItemToCategoryGet)
 router.get("/updateItem/:packingListItemId", controller.updateItemGet);
 router.post("/updateItem/:packingListItemId", controller.updateItemPost);
 router.post(

@@ -1,0 +1,11 @@
+<div class="itemList">
+<% itemList.forEach(item => { %>
+  <% console.log(item) %>
+  <form action="/addItemToCategory/<%= item.id %>" method="get">
+    <button type="submit" class="listItem">
+      <div><%= item.name || "No name" %></div>
+      <div><%= item.description || "No description" %></div>
+    </button>
+  </form>
+<% }) %> 
+</div>

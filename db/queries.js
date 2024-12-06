@@ -127,6 +127,15 @@ async function getCurrentList() {
   return array;
 }
 
+async function getItemList() {
+  const { rows } = await pool.query(
+    `
+    SELECT id, name, description FROM items
+    `
+  );
+  return rows;
+}
+
 async function getSingleItemFromPackingList(packingListItemId) {
   const { rows } = await pool.query(
     `
@@ -228,6 +237,7 @@ async function toggleWornBoolean(packingListItemId) {
 module.exports = {
   getCurrentList,
   getForeignKey,
+  getItemList,
   getNewestItemId,
   getSingleItemFromPackingList,
   insertIntoPackingList,
