@@ -14,8 +14,10 @@ a {
   color: #000000;
   display: flex;
   font-weight: bold;
+  justify-self: left;
   margin: 0.5rem;
   padding: 0.1rem 0.3rem;
+  text-align: center;
   text-decoration: none;
 }
 
