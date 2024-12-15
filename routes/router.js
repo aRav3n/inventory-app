@@ -4,24 +4,21 @@ const router = Router();
 
 router.get("/", controller.indexActionGet);
 router.get("/addItem/:category", controller.addItemGet);
-router.get("/addItemToCategory/:itemId", controller.addItemToCategoryGet)
-router.get("/updateItem/:packingListItemId", controller.updateItemGet);
-router.post("/updateItem/:packingListItemId", controller.updateItemPost);
+router.get("/addItemToCategory/:itemId", controller.addItemToCategoryGet);
+router.post(
+  "/addItemToCategory/:itemId/:categoryId",
+  controller.addItemToCategoryPost
+);
+router.post("/deleteItem/:itemId", controller.deleteItemPost);
+router.post(
+  "/removeItemFromList/:packingListItemId",
+  controller.deleteItemFromListPost
+);
 router.post(
   "/toggleWornPost/:packingListItemId",
   controller.toggleWornBooleanPost
 );
-router.post("/removeItemFromList/:packingListItemId", controller.deleteItemFromListPost);
-/*
-router.post("/searchItem", controller.searchItemPost);
-router.post("/newCategory", controller.newCategoryPost);
-router.post("/newItem", controller.newItemPost);
-router.post("/updateCategory", controller.updateCategoryPost);
-router.post("/updateItem", controller.updateItemPost);
-router.post("/updateList", controller.updateLis);
-router.post("/deleteCategory", controller.deleteCategoryPost);
-router.post("/deleteItem", controller.deleteItemPost);
-router.use("*", controller.errorGet);
-*/
+router.get("/updateItem/:packingListItemId", controller.updateItemGet);
+router.post("/updateItem/:packingListItemId", controller.updateItemPost);
 
 module.exports = router;

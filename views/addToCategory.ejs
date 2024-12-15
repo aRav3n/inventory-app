@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<%- include("partials/head.ejs") %>
+<body>
+  <h1>Add <%= item.name %> to a category</h1>
+  <div class="buttonList">
+    <% categories.forEach(category => { %>
+      <form action="/addItemToCategory/<%= item.id %>/<%= category.id %>" method="post">
+        <button type="submit">Add <%= item.name %> to <%= category.category_name %></button>
+      </form>
+    <% }) %>
+    <form action="/deleteItem/<%= item.id %>" method="post">
+      <button class="deleteButton" type="submit"><img src="/delete.png" alt=""> Permanently delete <%= item.name %></button>
+    </form>
+  </div>
+</body>
+</html>

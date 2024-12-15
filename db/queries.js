@@ -1,5 +1,21 @@
 const pool = require("./pool");
 
+async function getAllPackingIdsForItem(itemId) {
+  const { rows } = await pool.query(
+    `
+    SELECT id
+    FROM packing_list
+    WHERE item_id = $1
+    `,
+    [itemId]
+  );
+  const array = [];
+  for (let i = 0; i < rows.length; i++) {
+    array.push(rows[i].id);
+  }
+  return array;
+}
+
 async function getForeignKey(
   foreignTable,
   columnToCompare,
@@ -165,6 +181,23 @@ async function getSingleItemFromPackingList(packingListItemId) {
   return itemObject;
 }
 
+async function getSingleItemById(itemId) {
+  const { rows } = await pool.query(
+    `
+    SELECT 
+      id,
+      name,
+      description,
+      weight_grams
+    FROM items
+    WHERE id = $1
+    `,
+    [itemId]
+  );
+  const itemObject = rows[0];
+  return itemObject;
+}
+
 async function updateItem(packingListItemId, newInfoObject) {
   await pool.query(
     `
@@ -215,6 +248,20 @@ async function removeItemFromPackingList(packingListItemId) {
   );
 }
 
+async function deleteItem(itemId) {
+  const packingListIds = await getAllPackingIdsForItem(itemId);
+  for (let i = 0; i < packingListIds.length; i++) {
+    removeItemFromPackingList(packingListIds[i]);
+  }
+  await pool.query(
+    `
+    DELETE FROM items
+    WHERE id = $1
+    `,
+    [itemId]
+  )
+}
+
 async function toggleWornBoolean(packingListItemId) {
   const { rows } = await pool.query(
     `
@@ -235,10 +282,13 @@ async function toggleWornBoolean(packingListItemId) {
 }
 
 module.exports = {
+  deleteItem,
+  getCategories,
   getCurrentList,
   getForeignKey,
   getItemList,
   getNewestItemId,
+  getSingleItemById,
   getSingleItemFromPackingList,
   insertIntoPackingList,
   insertItem,

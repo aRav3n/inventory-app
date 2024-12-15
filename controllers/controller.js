@@ -18,13 +18,38 @@ async function addItemGet(req, res) {
 
 async function addItemToCategoryGet(req, res) {
   const itemId = req.params.itemId;
-  console.log(itemId);
-  res.redirect("/")
+  const item = await db.getSingleItemById(itemId);
+  const categories = await db.getCategories();
+  res.render("addToCategory", {
+    categories: categories,
+    item: item,
+    title: "Add to Category",
+  });
+}
+
+async function addItemToCategoryPost(req, res) {
+  const itemId = req.params.itemId;
+  const categoryId = req.params.categoryId;
+  const item = await db.getSingleItemById(itemId);
+  await db.insertIntoPackingList(
+    categoryId,
+    1,
+    false,
+    item.name,
+    item.description
+  );
+  res.redirect("/");
 }
 
 async function deleteItemFromListPost(req, res) {
   const packingListItemId = req.params.packingListItemId;
   await db.removeItemFromPackingList(packingListItemId);
+  res.redirect("/");
+}
+
+async function deleteItemPost(req, res) {
+  const itemId = req.params.itemId;
+  await db.deleteItem(itemId);
   res.redirect("/");
 }
 
@@ -64,7 +89,9 @@ async function toggleWornBooleanPost(req, res) {
 module.exports = {
   addItemGet,
   addItemToCategoryGet,
+  addItemToCategoryPost,
   deleteItemFromListPost,
+  deleteItemPost,
   indexActionGet,
   toggleWornBooleanPost,
   updateItemGet,

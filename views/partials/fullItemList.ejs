@@ -1,6 +1,6 @@
 <div class="itemList">
+  <h3>Click on an item to delete it or add it to a category</h3>
 <% itemList.forEach(item => { %>
-  <% console.log(item) %>
   <form action="/addItemToCategory/<%= item.id %>" method="get">
     <button type="submit" class="listItem">
       <div><%= item.name || "No name" %></div>
