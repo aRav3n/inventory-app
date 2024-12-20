@@ -1,15 +1,6 @@
 const db = require("../db/queries");
 const { body, validationResult } = require("express-validator");
-/*
-const validateItem = [
-  body("userName")
-    .trim()
-    .isAlpha()
-    .withMessage("Username may only contain letters and numbers")
-    .isLength({ min: 1, max: 10 })
-    .withMessage("Username must be between 1 and 10 characters"),
-];
-*/
+const populateTables = require("../db/buildAndPopulateTables");
 
 async function addItemGet(req, res) {
   const newestItemID = await db.getNewestItemId();
@@ -54,8 +45,16 @@ async function deleteItemPost(req, res) {
 }
 
 async function indexActionGet(req, res) {
-  const list = await db.getCurrentList();
-  const itemList = await db.getItemList();
+  let list = await db.getCurrentList();
+  if (list.length === 0) {
+    await populateTables();
+    list = await db.getCurrentList();
+  }
+  let itemList = await db.getItemList();
+  if (itemList.length === 0) {
+    await populateTables();
+    itemList = await db.getItemList();
+  }
   res.render("index", {
     title: "List",
     list: list,
