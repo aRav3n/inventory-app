@@ -1,6 +1,5 @@
 const dropOldTables = require("./dropTables");
 const makeNewTables = require("./buildAndPopulateTables");
-const pool = require("./pool");
 
 async function main() {
   await dropOldTables();
