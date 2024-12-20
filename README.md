@@ -6,4 +6,4 @@ I was originally planning to do a store inventory but thought that this packing 
 
 ## Complications and Learnings
 
-The structure of db/populate.js is significantly more complex than in past projects. I ended up relying on AI for troubleshooting and suggestions as to the cleanest way to write the code.
+The structure of db/buildAndPopulateTables.js is significantly more complex than in past projects. I ended up relying on AI for troubleshooting and suggestions as to the cleanest way to write the code.
