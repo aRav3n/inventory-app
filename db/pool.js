@@ -6,7 +6,7 @@ module.exports = new Pool({
   /*
   host: "localhost",
   user: process.env.ROLE_NAME,
-  database: "packing_list_app",
+  database: process.env.DATABASE_NAME
   password: process.env.ROLE_PASSWORD,
   port: 5432,
   */
