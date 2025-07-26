@@ -3,6 +3,7 @@
 ## Table of Contents
 
 - [Description](#description)
+- [Installation Instructions](#installation-instructions)
 - [Usage and Screenshots](#usage-and-screenshots)
 - [Technologies Used](#technologies-used)
 - [Dependencies and Credits](#dependencies-and-credits)
@@ -11,6 +12,30 @@
 ## Description
 
 I created this app as part of the curriculum for [The Odin Project](https://www.theodinproject.com). Originally I was planning to do a store inventory but thought that this packing list would be more useful for me in the future.
+
+## Installation Instructions
+
+1. Clone or fork this repo
+2. cd into the project root directory (where the README.md file is located)
+3. Run the following in your terminal
+    - ``` bash
+      npm init -y
+ 
+      npm install dotenv ejs express
+      npm install express-validator pg
+      ```
+1. Create a .env file 
+   - ``` bash
+     PORT="3000" (or any even 4 digit integer)
+     ROLE_NAME= (database role name)
+     ROLE_PASSWORD= (database role password)
+     DATABASE_NAME= (database name)
+     DATABASE_URL= (URL if remote database)
+     ```
+1. ``` bash
+   npm run dev
+   ```
+   - `^` + `c` will end the process 
 
 ## Usage and Screenshots
 
@@ -71,6 +96,6 @@ To create a new item click on the "+ Add new item" button. An existing item can 
 ├──db/                     # Mock database using JavaScript files
 ├──public/                 # Locally hosted image files
 ├──routes/                 # Router file
-├──views/                  # Files to generate pages with EJS
-    ├── partials/          # Partial EJS
+└──views/                  # Files to generate pages with EJS
+    └── partials/          # Partial EJS
 ```
