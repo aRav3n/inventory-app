@@ -21,7 +21,8 @@ I created this app as part of the curriculum for [The Odin Project](https://www.
     - ``` bash
       npm init -y
  
-      npm install dotenv ejs express
+      npm install dotenv ejs
+      npm install express cors
       npm install express-validator pg
       ```
 1. Create a .env file 
@@ -79,6 +80,7 @@ To create a new item click on the "+ Add new item" button. An existing item can 
 
 ### Package Dependencies
 
+- [cors](https://www.npmjs.com/package/cors)
 - [dotenv](https://www.npmjs.com/package/dotenv)
 - [express-validator](https://www.npmjs.com/package/express-validator)
 - [pg](https://www.npmjs.com/package/pg)
@@ -87,7 +89,7 @@ To create a new item click on the "+ Add new item" button. An existing item can 
 
 - [Devicion](https://devicon.dev/)
 - [Skillicons](https://skillicons.dev/)
-- [LigterPack](https://lighterpack.com/)
+- [LighterPack](https://lighterpack.com/)
 
 ## Project Structure
 
