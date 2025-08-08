@@ -20,10 +20,7 @@ I created this app as part of the curriculum for [The Odin Project](https://www.
 3. Run the following in your terminal
     - ``` bash
       npm init -y
- 
-      npm install dotenv ejs
-      npm install express cors
-      npm install express-validator pg
+      npm install 
       ```
 1. Create a .env file 
    - ``` bash
